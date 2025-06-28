@@ -40,7 +40,7 @@ function loadHistory() {
       console.warn("Failed to parse history. Using empty array.", e);
     }
   }
-  return generateMockBreevSeshHistory();
+  return [];
 }
 
 export type BreevSeshSettings = {
