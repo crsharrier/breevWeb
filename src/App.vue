@@ -17,7 +17,7 @@ const { } = breevSeshStore;
                 <span>{{ r.name }}</span>
             </v-btn>
         </v-bottom-navigation>
-        <v-main class="d-flex align-center justify-center">
+        <v-main class="d-flex align-center justify-center" style="height: calc(100vh - 56px); overflow: hidden;">
             <v-container class="d-flex flex-column align-center justify-center" fluid>
                 <RouterView />
             </v-container>

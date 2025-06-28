@@ -79,31 +79,29 @@ onBeforeUnmount(() => {
     </v-dialog>
 
     <!-- breev circle  -->
-    <div ref="sketchContainer" class="relative">
-        <div class="absolute w-full left-0 top-0 h-2/3 flex flex-col items-center justify-end">
-            <v-btn v-if="!isActiveSesh" class="text-none bottom-button" color="primary" @click="startSesh">
-                Start Sesh
-            </v-btn>
-            <div v-else class="flex flex-col h-24 justify-start gap-4 items-center">
-                <span class="text-4xl font-bold text-gray-700">{{ mainText }}</span>
-                <span class="text-xl text-gray-700">{{ subText }}</span>
-            </div>
-            <v-btn v-if="isHoldingBreath" class="text-none bottom-button" color="secondary" @click="endHoldBreath">
-                End hold
-            </v-btn>
-        </div>
-        <!-- DEBUG -->
-        <!-- <div class="absolute bottom-full w-full flex justify-evenly">
+    <v-row class="w-100 h-100" dense>
+        <v-col cols="12" class="d-flex justify-center">
+            <div ref="sketchContainer" class="relative">
+                <div class="absolute w-full left-0 top-0 h-2/3 flex flex-col items-center justify-end">
+                    <v-btn v-if="!isActiveSesh" class="text-none bottom-0 absolute" color="primary" @click="startSesh">
+                        Start Sesh
+                    </v-btn>
+                    <div v-else class="flex flex-col h-24 justify-start gap-4 items-center">
+                        <span class="text-4xl font-bold text-gray-700">{{ mainText }}</span>
+                        <span class="text-xl text-gray-700">{{ subText }}</span>
+                    </div>
+                    <v-btn v-if="isHoldingBreath" class="text-none bottom-button" color="secondary"
+                        @click="endHoldBreath">
+                        End hold
+                    </v-btn>
+                </div>
+                <!-- DEBUG -->
+                <!-- <div class="absolute bottom-full w-full flex justify-evenly">
             <span class="text-xs text-gray-500">Active Session: {{ isActiveSesh }}</span>
             <span class="text-xs text-gray-500">Breathing In: {{ isBreathingIn }}</span>
             <span class="text-xs text-gray-500">Holding Breath: {{ isHoldingBreath }}</span>
         </div> -->
-    </div>
+            </div>
+        </v-col>
+    </v-row>
 </template>
-
-<style scoped>
-.bottom-button {
-    position: absolute;
-    bottom: -2rem;
-}
-</style>

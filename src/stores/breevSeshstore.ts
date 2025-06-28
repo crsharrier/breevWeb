@@ -41,6 +41,7 @@ function loadHistory() {
     }
   }
   return [];
+  //   return generateMockBreevSeshHistory();
 }
 
 export type BreevSeshSettings = {
