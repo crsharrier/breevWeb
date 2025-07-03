@@ -86,6 +86,9 @@ const useBreevSeshStore = defineStore("breevSesh", () => {
     { deep: true }
   );
 
+  type HistoryTab = "list" | "graph";
+  const historyTab = ref<HistoryTab>("list");
+
   return {
     mainText,
     subText,
@@ -94,6 +97,7 @@ const useBreevSeshStore = defineStore("breevSesh", () => {
     isActiveSesh,
     settings,
     history,
+    historyTab,
     // methods
     saveSesh,
   };

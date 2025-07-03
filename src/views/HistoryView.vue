@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import useBreevSeshStore from '../stores/breevSeshstore';
-import { ref } from 'vue';
-// import LineChart from '@/components/ui/chart-line/LineChart.vue';
+import HistoryChart from '@/components/HistoryChart.vue';
 
 const breevSeshStore = useBreevSeshStore();
-const { history } = storeToRefs(breevSeshStore);
+const { history, historyTab } = storeToRefs(breevSeshStore);
 
-type HistoryTab = 'list' | 'graph'
-const tab = ref<HistoryTab>('list');
+
 
 </script>
 
@@ -16,7 +14,7 @@ const tab = ref<HistoryTab>('list');
     <v-row dense class="w-100 max-w-[500px] justify-center">
         <v-col cols="12" class="d-flex justify-center">
             <v-card height="500" class="overflow-y-auto pa-2" style="max-width: 600px; width: 100%;">
-                <v-tabs v-model="tab" color="primary">
+                <v-tabs v-model="historyTab" color="primary">
                     <v-tab value="list">
                         <v-icon icon="mdi-format-list-bulleted" />
                     </v-tab>
@@ -25,7 +23,7 @@ const tab = ref<HistoryTab>('list');
                     </v-tab>
                 </v-tabs>
 
-                <v-tabs-window v-model="tab">
+                <v-tabs-window v-model="historyTab">
                     <v-tabs-window-item value="list">
                         <div v-if="!history.length" class="w-full h-full">
                             <div class="text-center text-gray-500 py-8">
@@ -42,7 +40,7 @@ const tab = ref<HistoryTab>('list');
                                                 year: 'numeric',
                                                 month: 'long',
                                                 day: 'numeric',
-                                        }) : 'Unknown Date' }}
+                                            }) : 'Unknown Date' }}
                                     </strong>
                                     <div class="ml-3">
                                         {{ record.avgHoldDurationMs
@@ -67,7 +65,11 @@ const tab = ref<HistoryTab>('list');
                     </v-tabs-window-item>
 
                     <v-tabs-window-item value="graph">
-                        <div>Graph View coming soon</div>
+                        <!-- <div>Graph View coming soon</div> -->
+                        <div v-if="history" class="text-center text-gray-500 py-8">
+                            No history available. Complete a session to see it visualised here.
+                        </div>
+                        <HistoryChart v-else />
                     </v-tabs-window-item>
                 </v-tabs-window>
             </v-card>
