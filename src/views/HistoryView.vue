@@ -31,8 +31,7 @@ const { history, historyTab } = storeToRefs(breevSeshStore);
                             </div>
                         </div>
                         <v-expansion-panels v-else>
-                            <v-expansion-panel v-for="(record, index) in history" :key="index">
-
+                            <v-expansion-panel v-for="(record, index) in [...history].reverse()" :key="index">
                                 <v-expansion-panel-title>
                                     <strong class="w-28 text-right">
                                         {{ record.completedAt ? new Date(record.completedAt).toLocaleDateString('en-GB',
@@ -66,7 +65,7 @@ const { history, historyTab } = storeToRefs(breevSeshStore);
 
                     <v-tabs-window-item value="graph">
                         <!-- <div>Graph View coming soon</div> -->
-                        <div v-if="history" class="text-center text-gray-500 py-8">
+                        <div v-if="history.length === 0" class="text-center text-gray-500 py-8">
                             No history available. Complete a session to see it visualised here.
                         </div>
                         <HistoryChart v-else />

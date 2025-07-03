@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 import Chart from 'chart.js/auto';
+import type { ChartConfiguration } from 'chart.js';
 import { storeToRefs } from 'pinia';
 import useBreevSeshStore from '../stores/breevSeshstore';
 import 'chartjs-adapter-date-fns';
@@ -10,7 +11,7 @@ const { history } = storeToRefs(breevSeshStore);
 const historyChartRef = ref<HTMLCanvasElement | null>(null);
 
 const selectedRange = ref<'7d' | '1m' | '6m' | 'all'>('1m');
-let chartInstance: Chart | null = null;
+let chartInstance: Chart | null | undefined = null;
 
 const filterHistoryByRange = () => {
     const now = new Date();
@@ -71,28 +72,31 @@ const renderChart = () => {
             break;
         case 'all':
             cutoff = filtered.length
-                ? new Date(Math.min(...filtered.map(r => new Date(r.completedAt).getTime())))
+                ? new Date(Math.min(...filtered.map(r => r.completedAt ? new Date(r.completedAt).getTime() : 0)))
                 : new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
             timeUnit = 'month';
             break;
     }
 
+    const filteredData = filtered
+        .filter(record => record.completedAt && !isNaN(new Date(record.completedAt).getTime()) && typeof record.avgHoldDurationMs === 'number')
+        .map(record => ({
+            x: record.completedAt ? new Date(record.completedAt).getTime() : 0,
+            y: record.avgHoldDurationMs as number,
+        }));
+
     const data = {
-        labels: history.value.map(record => record.completedAt),
+        labels: filteredData.map(point => point.x),
         datasets: [
             {
                 label: 'Avg. hold duration',
-                data: filtered.map(record => ({
-                    x: record.completedAt,
-                    y: record.avgHoldDurationMs,
-                })),
+                data: filteredData,
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
             },
         ],
     }
-
-    const config = {
+    const config: ChartConfiguration<'line', { x: number; y: number; }[], number> = {
         type: 'line',
         data: data,
         options: {
@@ -117,8 +121,8 @@ const renderChart = () => {
                         autoSkip: true,
                         maxTicksLimit: 4,
                     },
-                    min: cutoff,
-                    max: now,
+                    min: cutoff ? cutoff.getTime() : undefined,
+                    max: now.getTime(),
                 },
                 y: {
                     stacked: true,
@@ -138,13 +142,15 @@ const renderChart = () => {
                 },
                 tooltip: {
                     callbacks: {
-                        label: context =>
-                            `${context.dataset.label}: ${(context.raw.y / 1000).toFixed(1)}s`,
+                        label: context => {
+                            const raw = context.raw as { x: string | undefined; y: number | undefined };
+                            return `${context.dataset.label}: ${(raw.y ? raw.y / 1000 : 0).toFixed(1)}s`;
+                        },
                     },
                 },
-                interaction: {
-                    intersect: false,
-                },
+            },
+            interaction: {
+                intersect: false,
             },
         }
     };
