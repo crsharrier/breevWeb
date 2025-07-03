@@ -29,7 +29,7 @@ const tab = ref<HistoryTab>('list');
                     <v-tabs-window-item value="list">
                         <div v-if="!history.length" class="w-full h-full">
                             <div class="text-center text-gray-500 py-8">
-                                No history available. Start a session to see your progress here.
+                                No history available. Complete a session to see it listed here.
                             </div>
                         </div>
                         <v-expansion-panels v-else>
@@ -37,11 +37,12 @@ const tab = ref<HistoryTab>('list');
 
                                 <v-expansion-panel-title>
                                     <strong class="w-28 text-right">
-                                        {{ new Date(record.completedAt).toLocaleDateString('en-GB', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                        }) }}
+                                        {{ record.completedAt ? new Date(record.completedAt).toLocaleDateString('en-GB',
+                                            {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                        }) : 'Unknown Date' }}
                                     </strong>
                                     <div class="ml-3">
                                         {{ record.avgHoldDurationMs

@@ -2,6 +2,8 @@ import { storeToRefs } from "pinia";
 import useBreevSeshStore, {
   type BreevSeshSettings,
 } from "../stores/breevSeshstore";
+import { useRouter } from "vue-router";
+import { ref } from "vue";
 
 export type BreevSeshRoundRecord = {
   holdDurationMs: number;
@@ -23,25 +25,31 @@ const useBreevSesh = () => {
     storeToRefs(breevSeshStore);
   const { settings, saveSesh } = breevSeshStore;
 
-  let seshRecord: BreevSeshRecord = {
+  const router = useRouter();
+
+  let seshRecord = ref<BreevSeshRecord>({
     rounds: [],
     breathsPerRound: settings.breaths,
-  };
+  });
+
   function _initSeshRecord() {
-    seshRecord = {
-      rounds: [],
+    seshRecord.value = {
       breathsPerRound: settings.breaths,
+      rounds: [],
+      completedAt: undefined, // or set this below when you finish
     };
   }
 
   function _finishSesh() {
-    saveSesh(seshRecord);
+    saveSesh(seshRecord.value);
     mainText.value = "";
     subText.value = "";
     isActiveSesh.value = false;
+    router.push("/latest");
   }
 
   function _finishRound(s: BreevSeshSettings) {
+    console.log("finishing round, rounds left:", s.rounds);
     if (s.rounds > 1) {
       s.rounds--;
       s.breaths = settings.breaths;
@@ -54,9 +62,12 @@ const useBreevSesh = () => {
 
   function endHoldBreath() {
     const holdDuration = Date.now() - startHoldTime;
-    seshRecord.rounds.push({ holdDurationMs: holdDuration });
+    console.log("ending hold, hold duration:", holdDuration);
+    seshRecord.value.rounds.push({ holdDurationMs: holdDuration });
+    console.log("sesh record:", seshRecord.value);
     isHoldingBreath.value = false;
   }
+
   let startHoldTime: number;
 
   async function _holdBreath(s: BreevSeshSettings) {
@@ -113,7 +124,7 @@ const useBreevSesh = () => {
         return;
       }
       if (count > 0) {
-        mainText.value = count.toString();
+        mainText.value = count > 1 ? count.toString() : "Ready...";
         subText.value = `Round ${settings.rounds - s.rounds + 1} of ${
           settings.rounds
         }`;

@@ -2,17 +2,23 @@
 import { storeToRefs } from 'pinia';
 import { routes } from './router';
 import useBreevSeshStore from './stores/breevSeshstore';
+import { useRoute } from 'vue-router';
 const breevSeshStore = useBreevSeshStore();
 const { isActiveSesh } = storeToRefs(breevSeshStore);
-const { } = breevSeshStore;
+const route = useRoute();
 
 </script>
 
 <template>
     <v-app>
+        <v-app-bar v-if="route.path === '/' && !isActiveSesh" flat>
+            <v-btn class="text-none" icon="mdi-chevron-left" size="x-large" :to="'/latest'" variant="text">
+            </v-btn>
+        </v-app-bar>
+
         <!-- bottom nav  -->
-        <v-bottom-navigation v-if="!isActiveSesh" mode="shift">
-            <v-btn v-for="r in routes" :key="r.path" :to="r.path" class="text-none">
+        <v-bottom-navigation v-if="!isActiveSesh && route.path !== '/latest'" mode="shift">
+            <v-btn v-for="r in routes.filter(r => r.path !== '/latest')" :key="r.path" :to="r.path" class="text-none">
                 <v-icon>{{ r.icon }}</v-icon>
                 <span>{{ r.name }}</span>
             </v-btn>

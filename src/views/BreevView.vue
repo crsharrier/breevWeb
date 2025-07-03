@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
     <v-dialog v-if="isActiveSesh" max-width="500">
         <template #activator="{ props: activatorProps }">
             <v-btn v-bind="activatorProps" size="x-large" icon="mdi-close" variant="text"
-                class="position-absolute top-0 right-0 ma-2 z-50"></v-btn>
+                class="position-absolute top-0 right-0 ma-2 z-50" />
         </template>
 
         <template #default="{ isActive }">
@@ -77,6 +77,7 @@ onBeforeUnmount(() => {
             </v-card>
         </template>
     </v-dialog>
+
 
     <!-- breev circle  -->
     <v-row class="w-100 h-100" dense>

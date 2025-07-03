@@ -13,19 +13,19 @@ const model = defineModel<number>();
 </script>
 
 <template>
-    <v-container class=" flex-col full-width">
+    <v-container class=" flex-col full-width pa-0">
         <div class="flex items-end w-full">
             <!-- number  -->
-            <div class="text-4xl pr-4">{{ model }}</div>
+            <span class="text-2xl translate-y-[2px]">{{ model }}</span>
 
             <!-- label  -->
-            <div class="text-caption pb-2">
+            <div class="text-caption ml-1">
                 {{ label }}
             </div>
         </div>
 
         <!-- slider  -->
-        <v-slider show-ticks="always" v-model="model" :min="min" :max="max" :step="step" />
+        <v-slider show-ticks="always" variant="compact" v-model="model" :min="min" :max="max" :step="step" />
     </v-container>
 
 </template>

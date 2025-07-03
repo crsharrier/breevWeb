@@ -2,6 +2,12 @@ import { createRouter, createWebHistory } from "vue-router";
 
 export const routes = [
   {
+    name: "Latest",
+    path: "/latest",
+    component: () => import("../views/SeshReviewView.vue"),
+    icon: "mdi-chevron-left",
+  },
+  {
     name: "Settings",
     path: "/settings",
     component: () => import("../views/SettingsView.vue"),

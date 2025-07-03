@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { reactive, ref, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import type { BreevSeshRecord } from "../views/useBreevSesh";
 // import { generateMockBreevSeshHistory } from "../__test__/testUtils";
 
@@ -60,16 +60,22 @@ const useBreevSeshStore = defineStore("breevSesh", () => {
   const isActiveSesh = ref(false);
 
   const settings = reactive<BreevSeshSettings>(loadSettings());
-  const history = ref(loadHistory());
+  const history = computed<BreevSeshRecord[]>(() => loadHistory());
+
   function saveSesh(sesh: BreevSeshRecord) {
-    sesh.avgHoldDurationMs =
-      sesh.rounds.reduce((sum, round) => sum + round.holdDurationMs, 0) /
-        sesh.rounds.length || 0;
-    sesh.completedAt = new Date().toISOString();
-    history.value.push(sesh);
-    // Save to localStorage
+    const completedSesh = {
+      ...sesh,
+      avgHoldDurationMs:
+        sesh.rounds.reduce((sum, round) => sum + round.holdDurationMs, 0) /
+          sesh.rounds.length || 0,
+      completedAt: new Date().toISOString(),
+    };
+
+    const newHistory = [...history.value];
+    newHistory.push(completedSesh);
+
     localStorage.setItem("breevSeshHistory", JSON.stringify(history.value));
-    console.log("Sesh saved:", sesh);
+    console.log("Sesh saved:", completedSesh);
   }
 
   watch(
