@@ -16,9 +16,11 @@ let p5Instance: p5 | null = null;
 const HEIGHT = 600;
 const WIDTH = 400;
 
+
 onMounted(() => {
     const sketch = (p: any) => {
         let currentRadius = 50;
+        let currentRadius2 = 50;
         let targetRadius = 200;
         const minRadius = 20;
         const maxRadius = WIDTH;
@@ -34,12 +36,20 @@ onMounted(() => {
             targetRadius = isBreathingIn.value ? maxRadius : minRadius;
 
             // Smooth interpolation
-            currentRadius = p.lerp(currentRadius, targetRadius, 0.05);
+            currentRadius = p.lerp(currentRadius, targetRadius, 0.04);
 
             // Draw breathing circle
             p.noStroke();
             p.fill(100, 200, 255);
             p.ellipse(p.width / 2, p.height / 2.2, currentRadius);
+
+            // Secondary circle: slightly delayed/staggered
+
+            // Draw secondary breathing circle behind it
+            currentRadius2 = p.lerp(currentRadius2, targetRadius * 0.98, 0.03);
+            p.noStroke();
+            p.fill(180, 220, 255, 180); // lighter blue with some transparency
+            p.ellipse(p.width / 2, p.height / 2.2, currentRadius2);
         };
     };
 
